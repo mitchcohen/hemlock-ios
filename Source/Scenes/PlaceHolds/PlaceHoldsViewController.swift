@@ -48,8 +48,10 @@ class PlaceHoldsViewController: UIViewController {
         if (sender.isOn) {
             holdsSMSNumber.isUserInteractionEnabled = true
             holdsSMSNumber.becomeFirstResponder()
+            carrierPicker.isUserInteractionEnabled = true
         } else {
             holdsSMSNumber.isUserInteractionEnabled = false
+            carrierPicker.isUserInteractionEnabled = false
         }
     }
     @IBOutlet weak var placeHoldButton: UIButton!
@@ -60,7 +62,6 @@ class PlaceHoldsViewController: UIViewController {
     //MARK: - Functions
     override func viewDidLoad() {
         super.viewDidLoad()
-//        setupLocationPicker() //do this within fetchData()
         setupActivityIndicator()
         setupViews()
         fetchData()
@@ -97,6 +98,9 @@ class PlaceHoldsViewController: UIViewController {
     
     func setupCarrierPicker() {
         self.carrierLabels = SMSCarrier.getSpinnerLabels()
+        carrierLabels.sort()
+        let savedCarrier = App.valet.string(forKey: "carrier") ?? "---"
+        carrierLabels.insert(savedCarrier, at: 0)
         let selectCarrierIndex = 0 //TODO: get initial value from user prefs
         let mcInputView = McPicker(data: [carrierLabels])
         mcInputView.backgroundColor = .gray
@@ -109,6 +113,7 @@ class PlaceHoldsViewController: UIViewController {
             self?.selectedCarrierName = selections[0]!
             carrierPicker?.text = selections[0]!
         }
+        carrierPicker?.isUserInteractionEnabled = false
     }
 
     func fetchData() {
@@ -192,7 +197,8 @@ class PlaceHoldsViewController: UIViewController {
         var notifyPhoneNumber: String? = nil
         var notifyCarrierID: Int? = nil
         if smsSwitch.isOn,
-            let carrier = SMSCarrier.find(byName: self.selectedCarrierName)
+            let carrier = SMSCarrier.find(byName: self.selectedCarrierName),
+            App.valet.set(string: self.selectedCarrierName, forKey: "carrier")
         {
             guard let phoneNumber = holdsSMSNumber.text,
                 phoneNumber.count > 0 else
