@@ -34,6 +34,7 @@ class PlaceHoldsViewController: UIViewController {
     var selectedCarrierName = ""
     var startOfFetch = Date()
 
+
     weak var activityIndicator: UIActivityIndicatorView!
 
     @IBOutlet weak var holdsTitleLabel: UILabel!
@@ -98,15 +99,22 @@ class PlaceHoldsViewController: UIViewController {
     
     func setupCarrierPicker() {
         self.carrierLabels = SMSCarrier.getSpinnerLabels()
+        var selectCarrierIndex = 0
         carrierLabels.sort()
         let savedCarrier = App.valet.string(forKey: "carrier") ?? "---"
-        carrierLabels.insert(savedCarrier, at: 0)
-        let selectCarrierIndex = 0 //TODO: get initial value from user prefs
+        for index in 0..<carrierLabels.count {
+            let carrier = carrierLabels[index]
+            if carrier == savedCarrier {
+                selectCarrierIndex = index
+            }
+        }
+//        let selectCarrierIndex = 0 //TODO: get initial value from user prefs
         let mcInputView = McPicker(data: [carrierLabels])
         mcInputView.backgroundColor = .gray
         mcInputView.backgroundColorAlpha = 0.25
         mcInputView.fontSize = 16
         mcInputView.pickerSelectRowsForComponents = [0: [selectCarrierIndex: true]]
+        self.selectedCarrierName = carrierLabels[selectCarrierIndex]
         carrierPicker.text = carrierLabels[selectCarrierIndex]
         carrierPicker.inputViewMcPicker = mcInputView
         carrierPicker.doneHandler = { [weak self, carrierPicker] (selections) in
@@ -169,6 +177,7 @@ class PlaceHoldsViewController: UIViewController {
         holdsAuthorLabel.text = record?.author
         holdsSMSNumber.isUserInteractionEnabled = false
         Style.styleButton(asInverse: placeHoldButton)
+        holdsSMSNumber.text = App.valet.string(forKey: "SMSNumber") ?? ""
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -197,9 +206,9 @@ class PlaceHoldsViewController: UIViewController {
         var notifyPhoneNumber: String? = nil
         var notifyCarrierID: Int? = nil
         if smsSwitch.isOn,
-            let carrier = SMSCarrier.find(byName: self.selectedCarrierName),
-            App.valet.set(string: self.selectedCarrierName, forKey: "carrier")
+            let carrier = SMSCarrier.find(byName: self.selectedCarrierName)
         {
+            App.valet.set(string: self.selectedCarrierName, forKey: "carrier")
             guard let phoneNumber = holdsSMSNumber.text,
                 phoneNumber.count > 0 else
             {
@@ -207,6 +216,8 @@ class PlaceHoldsViewController: UIViewController {
                 return
             }
             notifyPhoneNumber = phoneNumber
+            debugPrint(phoneNumber)
+            App.valet.set(string: phoneNumber, forKey: "SMSNumber")
             notifyCarrierID = carrier.id
         }
 
