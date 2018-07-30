@@ -48,7 +48,7 @@ class PlaceHoldsViewController: UIViewController {
     @IBAction func smsSwitchAction(_ sender: UISwitch) {
         if (sender.isOn) {
             holdsSMSNumber.isUserInteractionEnabled = true
-            holdsSMSNumber.becomeFirstResponder()
+//            holdsSMSNumber.becomeFirstResponder()
             carrierPicker.isUserInteractionEnabled = true
         } else {
             holdsSMSNumber.isUserInteractionEnabled = false
