@@ -101,6 +101,7 @@ class PlaceHoldsViewController: UIViewController {
         self.carrierLabels = SMSCarrier.getSpinnerLabels()
         var selectCarrierIndex = 0
         carrierLabels.sort()
+        carrierLabels.insert("---", at: 0)
         let savedCarrier = App.valet.string(forKey: "carrier") ?? "---"
         for index in 0..<carrierLabels.count {
             let carrier = carrierLabels[index]
@@ -178,6 +179,7 @@ class PlaceHoldsViewController: UIViewController {
         holdsSMSNumber.isUserInteractionEnabled = false
         Style.styleButton(asInverse: placeHoldButton)
         holdsSMSNumber.text = App.valet.string(forKey: "SMSNumber") ?? ""
+//        App.valet.removeObject(forKey: "carrier") // used to clear saved carrier
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
