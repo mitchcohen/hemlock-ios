@@ -207,9 +207,13 @@ class PlaceHoldsViewController: UIViewController {
 
         var notifyPhoneNumber: String? = nil
         var notifyCarrierID: Int? = nil
-        if smsSwitch.isOn,
-            let carrier = SMSCarrier.find(byName: self.selectedCarrierName)
+        if smsSwitch.isOn
         {
+            guard let carrier = SMSCarrier.find(byName: self.selectedCarrierName) else {
+                self.showAlert(title: "Error", message: "Please select a valid carrier")
+                return
+            }
+            debugPrint(carrier.id, carrier.name)
             App.valet.set(string: self.selectedCarrierName, forKey: "carrier")
             guard let phoneNumber = holdsSMSNumber.text,
                 phoneNumber.count > 0 else
