@@ -30,6 +30,7 @@ protocol AppConfiguration {
     var enableHierarchicalOrgTree: Bool { get }
     var enableHoldShowQueuePosition: Bool { get }
     var enableHoldPhoneNotification: Bool { get }
+    var enableHoldShelfExpiration: Bool { get }
     var enableMainSceneBottomToolbar: Bool { get }
     var enablePayFines: Bool { get }
     var groupCopyInfoBySystem: Bool { get }

@@ -17,7 +17,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-class CWMarsAppConfiguration: AppConfiguration {
+class CWMarsAppConfiguration: AppConfiguration {    
     let title = "CW MARS"
     let url = "https://catalog.cwmars.org"
     let bugReportEmailAddress = "kenstir.apps@gmail.com"
@@ -26,6 +26,7 @@ class CWMarsAppConfiguration: AppConfiguration {
     let enableHierarchicalOrgTree = false
     let enableHoldShowQueuePosition = true
     let enableHoldPhoneNotification = false
+    let enableHoldShelfExpiration = true
     let enableMainSceneBottomToolbar = false
     let enablePayFines = true
     let groupCopyInfoBySystem = false
