@@ -398,8 +398,30 @@ class LiveServiceTests: XCTestCase {
         let req = Gateway.makeRequest(service: API.mobile, method: API.exists, args: [])
         return req.gatewayResponse()
     }
+    
+    func test_exists1() {
+        XCTAssertTrue(loadIDL())
 
-    func test_exists() {
+        let expectation = XCTestExpectation(description: "async response")
+
+        //let credential = Credential(username: account!.username, password: account!.password)
+        //let promise = AuthService.fetchAuthToken(credential: credential)
+//        promise.then { (authtoken: String) -> Promise<(GatewayResponse)> in
+//            XCTAssertFalse(authtoken.isEmpty)
+//            self.authtoken = authtoken
+//            return self.fetchExists(authtoken: authtoken)
+        self.fetchExists(authtoken: API.anonymousAuthToken).done { resp in
+            XCTAssertNotNil(resp)
+            expectation.fulfill()
+        }.catch { error in
+            XCTFail(error.localizedDescription)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 20.0)
+    }
+    
+    func test_exists2() {
         XCTAssertTrue(loadIDL())
 
         let expectation = XCTestExpectation(description: "async response")
@@ -410,6 +432,33 @@ class LiveServiceTests: XCTestCase {
             XCTAssertFalse(authtoken.isEmpty)
             self.authtoken = authtoken
             return self.fetchExists(authtoken: authtoken)
+        }.done { resp in
+            XCTAssertNotNil(resp)
+            expectation.fulfill()
+        }.catch { error in
+            XCTFail(error.localizedDescription)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 20.0)
+    }
+
+    func fetchXyzzy(authtoken: String, recordID: Int) -> Promise<(GatewayResponse)> {
+        let req = Gateway.makeRequest(service: API.mobile, method: API.xyzzy, args: [authtoken, recordID])
+        return req.gatewayResponse()
+    }
+
+    func test_xyzzy() {
+        XCTAssertTrue(loadIDL())
+
+        let expectation = XCTestExpectation(description: "async response")
+
+        let credential = Credential(username: account!.username, password: account!.password)
+        let promise = AuthService.fetchAuthToken(credential: credential)
+        promise.then { (authtoken: String) -> Promise<(GatewayResponse)> in
+            XCTAssertFalse(authtoken.isEmpty)
+            self.authtoken = authtoken
+            return self.fetchXyzzy(authtoken: authtoken, recordID: self.sampleRecordID!)
         }.done { resp in
             XCTAssertNotNil(resp)
             expectation.fulfill()
